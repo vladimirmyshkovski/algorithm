@@ -1,6 +1,5 @@
 import vweb
 import order { Order }
-import user { User }
 import product { Product }
 import sqlite
 
