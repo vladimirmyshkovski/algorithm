@@ -1,6 +1,7 @@
 module product
 
 import order { Order }
+// import sqlite
 
 [table: 'products']
 pub struct Product {
@@ -13,6 +14,13 @@ mut:
 }
 
 pub fn (product Product) calculate_total_hours() int {
-	mut total_hours := product.hours
+	total_hours := product.hours
+	/*
+	db := sqlite.connect('database') or { panic('fuck') }
+	hours := sql db { select hours from Product }
+	for i in 0 .. hours.len {
+		total_hours += hours[i]
+	}
+	*/
 	return total_hours
 }
