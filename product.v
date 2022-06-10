@@ -37,3 +37,9 @@ pub fn (app &App) find_product_by_id(id int) Product {
 		select from Product where id == id
 	}
 }
+
+pub fn (app &App) get_products_count() int {
+	return sql app.db {
+		select count from Product
+	}
+}
