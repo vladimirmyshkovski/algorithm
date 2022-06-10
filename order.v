@@ -18,3 +18,9 @@ pub fn (app &App) find_order_by_id(id int) Order {
 		select from Order where id == id
 	}
 }
+
+pub fn (app &App) get_orders_count() int {
+	return sql app.db {
+		select count from Order
+	}
+}
