@@ -23,3 +23,9 @@ pub fn (app &App) find_users_by_username(username string) []User {
 		select from User where username == username
 	}
 }
+
+pub fn (app &App) get_users_count() int {
+	return sql app.db {
+		select count from User
+	}
+}
