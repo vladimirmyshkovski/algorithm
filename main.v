@@ -2,8 +2,13 @@ import vweb
 import vweb.sse
 import sqlite
 import time
-import rand
 import json
+
+pub struct Data {
+	products_count int
+	users_count    int
+	orders_count   int
+}
 
 pub struct App {
 	vweb.Context
@@ -28,35 +33,23 @@ pub fn (mut app App) index() vweb.Result {
 	return $vweb.html()
 }
 
-fn get_data() {
-	return {
-		"products_count": "$products_count",
+pub fn (mut app App) get_data() Data {
+	products_count := sql app.db {
+		select count from Product
+	}
+	return Data{
+		products_count: products_count
+		users_count: 0
+		orders_count: 0
 	}
 }
 
 fn (mut app App) sse() vweb.Result {
 	mut session := sse.new_connection(app.conn)
-	// NB: you can setup session.write_timeout and session.headers here
 	session.start() or { return app.server_error(501) }
 	session.send_message(data: 'ok') or { return app.server_error(501) }
-	order := Order{}
 	for {
-		products_count := sql app.db {
-			select count from Product 
-		}
-		product := Product{
-			hours: 10
-			products: ''
-			order: order
-		}
-		sql app.db {
-			insert product into Product 
-		}
-		data := json.encode({
-			"time": time.now().str(),
-			"random_id": rand.ulid(),
-			"products_count": "$products_count",
-		})
+		data := json.encode(app.get_data())
 		session.send_message(event: 'ping', data: data) or { return app.server_error(501) }
 		println('> sent event: $data')
 		time.sleep(1 * time.second)
