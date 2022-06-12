@@ -13,15 +13,25 @@ pub fn (work Work) encode() string {
 	return json.encode(work)
 }
 
+pub fn (work Work) validate_work_hours() bool {
+	// return json.encode(work)
+	return true
+}
+
 pub fn (app &App) find_work_by_signature(signature string) Work {
 	// return sql app.db {
 	// select from Work where signature == signature
 	// }
 	for index in 0 .. store.products.len {
 		product := store.products[index]
-		work := product.work
-		if work.signature == signature {
-			work
+		match product {
+			EmptyProduct {}
+			FullProduct {
+				work := product.work
+				if work.signature == signature {
+					work
+				}
+			}
 		}
 	}
 	panic('Fuck')
